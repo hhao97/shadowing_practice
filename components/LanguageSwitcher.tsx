@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useLocale, useTransitions } from 'next-intl';
-import { usePathname, useRouter as useNextIntlRouter } from '@/i18n/routing';
-import { useParams } from 'next/navigation';
+import { useLocale, useTranslations } from "next-intl";
+import { usePathname, useRouter as useNextIntlRouter } from "@/i18n/routing";
+import { useParams } from "next/navigation";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Languages } from 'lucide-react';
-import { startTransition } from 'react';
+} from "@/components/ui/select";
+import { Languages } from "lucide-react";
+import { startTransition } from "react";
 
 const languages = [
-  { code: 'zh', name: '中文' },
-  { code: 'en', name: 'English' },
+  { code: "zh", name: "中文" },
+  { code: "en", name: "English" },
 ];
 
 export default function LanguageSwitcher() {
@@ -29,7 +29,7 @@ export default function LanguageSwitcher() {
       router.replace(
         // @ts-expect-error -- TypeScript will validate that only known `params` are used
         { pathname, params },
-        { locale: newLocale }
+        { locale: newLocale },
       );
     });
   };
