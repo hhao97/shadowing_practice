@@ -1,0 +1,67 @@
+{
+  "common": {
+    "appName": "YouTube Shadowing Practice",
+    "loading": "Loading...",
+    "error": "Error",
+    "back": "Back",
+    "backToHome": "Back to Home"
+  },
+  "home": {
+    "title": "YouTube Shadowing Practice",
+    "subtitle": "Improve your language skills by shadowing YouTube video subtitles",
+    "startPractice": "Start Practice",
+    "inputPlaceholder": "e.g., https://www.youtube.com/watch?v=jNQXAC9IVRw",
+    "inputDescription": "Enter YouTube video URL or video ID to get subtitles and start practicing",
+    "invalidUrl": "Invalid YouTube URL or video ID",
+    "step1": "Enter Link",
+    "step1Desc": "Paste YouTube video link",
+    "step2": "Load Subtitles",
+    "step2Desc": "Automatically fetch video subtitles",
+    "step3": "Practice Shadowing",
+    "step3Desc": "Practice following the subtitles",
+    "step4": "Improve Skills",
+    "step4Desc": "Continuously practice to improve"
+  },
+  "videoLibrary": {
+    "title": "Video Library",
+    "description": "Click a video to quickly start shadowing practice",
+    "recent": "Recent",
+    "popular": "Popular",
+    "noRecent": "No recent videos",
+    "noPopular": "No popular videos",
+    "emptyHint": "Enter a YouTube link above to get started",
+    "viewCount": "views",
+    "justNow": "just now",
+    "minutesAgo": "min ago",
+    "hoursAgo": "hrs ago",
+    "daysAgo": "days ago",
+    "weeksAgo": "weeks ago",
+    "monthsAgo": "months ago",
+    "yearsAgo": "years ago"
+  },
+  "practice": {
+    "loadingSubtitles": "Loading subtitles...",
+    "fetchError": "Failed to fetch subtitles",
+    "author": "Author",
+    "languageSelect": "Language",
+    "selectLanguage": "Select Language",
+    "subtitleList": "Subtitle List",
+    "clickToJump": "Click subtitle to jump to timestamp",
+    "tips": "Tips",
+    "tip1": "Click subtitles on the right to jump to the timestamp",
+    "tip2": "Current subtitle will be automatically highlighted",
+    "tip3": "Subtitle list auto-scrolls to follow playback",
+    "tip4": "Pause playback to practice shadowing"
+  },
+  "controls": {
+    "progress": "Progress",
+    "previous": "Previous Subtitle",
+    "repeat": "Repeat Current",
+    "play": "Play",
+    "pause": "Pause",
+    "next": "Next Subtitle",
+    "autoPlayNext": "Auto Play Next",
+    "autoPlayOn": "Auto play next subtitle after current finishes",
+    "autoPlayOff": "Auto repeat current subtitle after it finishes"
+  }
+}

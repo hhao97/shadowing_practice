@@ -99,42 +99,46 @@ export default function VideoTranscriptList({ onVideoSelect }: VideoTranscriptLi
             </p>
           </div>
         ) : (
-          <ScrollArea className="h-[400px] pr-4">
-            <div className="space-y-3">
+          <ScrollArea className="h-[600px] pr-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {videos.map((video) => (
                 <Card
                   key={video.id}
-                  className="cursor-pointer transition-all hover:shadow-md hover:border-primary/50"
+                  className="group cursor-pointer transition-all hover:shadow-lg hover:border-primary/50 overflow-hidden"
                   onClick={() => handleVideoClick(video.id)}
                 >
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      {/* 播放图标 */}
-                      <div className="flex-shrink-0 mt-1">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                          <Play className="h-5 w-5 text-primary" />
-                        </div>
+                  {/* 视频封面 */}
+                  <div className="relative aspect-video w-full overflow-hidden bg-muted">
+                    <img
+                      src={`https://img.youtube.com/vi/${video.id}/mqdefault.jpg`}
+                      alt={video.title}
+                      className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    {/* 播放按钮悬浮 */}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary">
+                        <Play className="h-6 w-6 text-primary-foreground ml-1" fill="currentColor" />
                       </div>
+                    </div>
+                    {/* 观看次数标签 */}
+                    <div className="absolute bottom-2 right-2 flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs text-white">
+                      <Eye className="h-3 w-3" />
+                      {video.viewCount}
+                    </div>
+                  </div>
 
-                      {/* 视频信息 */}
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium line-clamp-2 mb-1">
-                          {video.title}
-                        </h4>
-                        <p className="text-xs text-muted-foreground mb-2">
-                          {video.author}
-                        </p>
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Eye className="h-3 w-3" />
-                            {video.viewCount} 次查看
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {formatRelativeTime(video.lastAccessedAt)}
-                          </span>
-                        </div>
-                      </div>
+                  {/* 视频信息 */}
+                  <CardContent className="p-3">
+                    <h4 className="text-sm font-medium line-clamp-2 mb-2 leading-tight">
+                      {video.title}
+                    </h4>
+                    <p className="text-xs text-muted-foreground mb-2 line-clamp-1">
+                      {video.author}
+                    </p>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Clock className="h-3 w-3" />
+                      {formatRelativeTime(video.lastAccessedAt)}
                     </div>
                   </CardContent>
                 </Card>
