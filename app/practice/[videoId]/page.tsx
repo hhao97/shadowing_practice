@@ -22,6 +22,7 @@ import YouTubePlayer, {
   type YouTubePlayerRef,
 } from "@/components/YouTubePlayer";
 import TranscriptList from "@/components/TranscriptList";
+import SubtitleControls from "@/components/SubtitleControls";
 import { fetchTranscript } from "@/lib/transcript-service";
 import type {
   TranscriptApiResponse,
@@ -42,7 +43,13 @@ export default function PracticePage() {
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const [currentTime, setCurrentTime] = useState(0);
 
+  // 字幕控制状态
+  const [currentSubtitleIndex, setCurrentSubtitleIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [autoPlayNext, setAutoPlayNext] = useState(true);
+
   const playerRef = useRef<YouTubePlayerRef>(null);
+  const lastSubtitleIndexRef = useRef(-1);
 
   // 加载视频字幕
   useEffect(() => {
@@ -98,6 +105,104 @@ export default function PracticePage() {
   const handleBack = () => {
     router.push("/");
   };
+
+  // 播放指定字幕
+  const playSubtitle = (index: number) => {
+    const transcripts = getCurrentTrack();
+    if (index < 0 || index >= transcripts.length) return;
+
+    const subtitle = transcripts[index];
+    const startTime = parseFloat(subtitle.start);
+
+    setCurrentSubtitleIndex(index);
+    playerRef.current?.seekTo(startTime);
+    playerRef.current?.play();
+    setIsPlaying(true);
+  };
+
+  // 字幕控制函数
+  const handlePrevious = () => {
+    if (currentSubtitleIndex > 0) {
+      playSubtitle(currentSubtitleIndex - 1);
+    }
+  };
+
+  const handleRepeat = () => {
+    playSubtitle(currentSubtitleIndex);
+  };
+
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      playerRef.current?.pause();
+      setIsPlaying(false);
+    } else {
+      playerRef.current?.play();
+      setIsPlaying(true);
+    }
+  };
+
+  const handleNext = () => {
+    const transcripts = getCurrentTrack();
+    if (currentSubtitleIndex < transcripts.length - 1) {
+      playSubtitle(currentSubtitleIndex + 1);
+    }
+  };
+
+  const handleAutoPlayToggle = (enabled: boolean) => {
+    setAutoPlayNext(enabled);
+  };
+
+  // 监听播放进度，自动控制字幕播放
+  useEffect(() => {
+    const transcripts = getCurrentTrack();
+    if (transcripts.length === 0 || !isPlaying) return;
+
+    const currentSubtitle = transcripts[currentSubtitleIndex];
+    if (!currentSubtitle) return;
+
+    const startTime = parseFloat(currentSubtitle.start);
+    const duration = parseFloat(currentSubtitle.dur);
+    const endTime = startTime + duration;
+
+    // 检查当前字幕是否播放完毕
+    if (currentTime >= endTime && currentTime > startTime) {
+      if (autoPlayNext) {
+        // 自动播放下一条 - 需要防止重复触发
+        if (lastSubtitleIndexRef.current === currentSubtitleIndex) return;
+        lastSubtitleIndexRef.current = currentSubtitleIndex;
+
+        if (currentSubtitleIndex < transcripts.length - 1) {
+          setTimeout(() => {
+            playSubtitle(currentSubtitleIndex + 1);
+          }, 100);
+        } else {
+          // 已经是最后一条，暂停
+          setIsPlaying(false);
+          playerRef.current?.pause();
+        }
+      } else {
+        // 重复播放当前字幕 - 需要每次都触发，所以要重置lastSubtitleIndexRef
+        // 但为了避免在同一帧内重复触发，需要检查是否刚刚触发过
+        const now = Date.now();
+        if (lastSubtitleIndexRef.current === currentSubtitleIndex &&
+            now - (lastSubtitleIndexRef as any).lastTriggerTime < 500) {
+          return;
+        }
+
+        lastSubtitleIndexRef.current = currentSubtitleIndex;
+        (lastSubtitleIndexRef as any).lastTriggerTime = now;
+
+        setTimeout(() => {
+          playSubtitle(currentSubtitleIndex);
+        }, 100);
+      }
+    }
+  }, [currentTime, currentSubtitleIndex, isPlaying, autoPlayNext]);
+
+  // 重置lastSubtitleIndexRef当字幕切换时
+  useEffect(() => {
+    lastSubtitleIndexRef.current = -1;
+  }, [currentSubtitleIndex]);
 
   return (
     <>
@@ -167,6 +272,19 @@ export default function PracticePage() {
                     />
                   </CardContent>
                 </Card>
+
+                {/* 字幕控制面板 */}
+                <SubtitleControls
+                  isPlaying={isPlaying}
+                  autoPlayNext={autoPlayNext}
+                  onPrevious={handlePrevious}
+                  onRepeat={handleRepeat}
+                  onPlayPause={handlePlayPause}
+                  onNext={handleNext}
+                  onAutoPlayToggle={handleAutoPlayToggle}
+                  currentIndex={currentSubtitleIndex}
+                  totalCount={getCurrentTrack().length}
+                />
 
                 {/* 语言选择 */}
                 {transcriptData.languages.length > 1 && (
